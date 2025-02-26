@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model User {
+  id        String   @id @unique @default(uuid())
+  lastName  String
+  firstName String
+  dob       BigInt?
+  dod       BigInt?
+  createdAt BigInt?
+  updatedAt BigInt?
+  avatar    String?
+  images    String[]
+  gender    String?
+  bio       String?
+  job       String?
+
+  // Relationships
+  relationships1 Relationship[] @relation("User1")
+  relationships2 Relationship[] @relation("User2")
+}
+
+model Relationship {
+  id          Int      @id @unique @default(autoincrement())
+  userId1     String?  @map("userId1")
+  userId2     String?  @map("userId2")
+  childrenIds String[] @map("childrenIds")
+  status      String?
+  createdAt   BigInt?
+  updatedAt   BigInt?
+  rank        Int?
+
+  // Relationships
+  user1 User? @relation("User1", fields: [userId1], references: [id])
+  user2 User? @relation("User2", fields: [userId2], references: [id])
+}
